@@ -34,9 +34,9 @@ def restructure_data(data: dict) -> dict:
         signals = data[key]['ecg']['sig'][0][0]
         sample_rate = data[key]['ecg']['header'][0][0]['Sampling_Rate'][0][0][0][0]
         sample_size = data[key]['ecg']['header'][0][0]['Sample_Size_ECG'][0][0][0][0]
-        restructured_data[key]['data'] = signals
-        restructured_data[key]['header']['sample_rate'] = sample_rate
-        restructured_data[key]['header']['sample_size'] =  sample_size
+        restructured_data[key,'data'] = signals
+        restructured_data[key,'header', 'sample_rate'] = sample_rate
+        restructured_data[key,'header', 'sample_size'] =  sample_size
     return restructured_data
 
 if __name__ == '__main__':
