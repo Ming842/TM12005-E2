@@ -7,7 +7,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-dir = r'E:\OneDrive\School\Technical Medicine\TM Jaar 1\TM12004 - Advanced Signal Processing\data'
 
 
 def import_data(dir: str) -> dict:
@@ -22,7 +21,7 @@ def import_data(dir: str) -> dict:
                     dir_path = os.path.join(dir, file)
                     details = scipy.io.whosmat(dir_path)
                     array = scipy.io.loadmat(dir_path)
-                    imported_data[file] = array['ecg']['header']
+                    imported_data[file] = array
                     imported_data_details[file] = details
     return imported_data, imported_data_details
 
@@ -37,7 +36,3 @@ def import_one_data(dir: str, filename) -> dict:
     imported_data_details = details
     return imported_data, imported_data_details
 
-
-data, info = import_one_data(dir, '005_Pimpel_1.mat')
-types = data["ecg"].dtypes
-print()
