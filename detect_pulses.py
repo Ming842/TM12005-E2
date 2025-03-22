@@ -3,7 +3,7 @@ This module contains functions to filter data and detect pulses in the data.
 
 An example of code usage is provided below:
 
-        imported_data, imported_data_details = dl.import_data(r"C:\Users\jelle\OneDrive - Delft University of Technology\TM12005 Advanced Signal Processing\opdracht 2\data")
+        imported_data, imported_data_details = dl.import_data(r"C:\\Users\\jelle\\OneDrive - Delft University of Technology\\TM12005 Advanced Signal Processing\\opdracht 2\\data")
         data = dl.restructure_data(imported_data)
 
         mask_filter = dp.filter_data(data,"005_Pimpel.mat")
@@ -19,9 +19,6 @@ An example of code usage is provided below:
 
         plt.plot(time, data_plot)
         plt.plot(time[data_mask],np.zeros(len(data_plot[data_mask])),"*")
-
-
-
 """
 import numpy as np
 
@@ -98,4 +95,20 @@ def detect_pulses(data, filter_mask, file_name):
         mask[true_indices, i] = True
     return mask
 
+def remove_pulses(data: np.ndarray, filer_mask: np.ndarray) -> np.ndarray:
+    """"
+    Removes pulses from the data by replacing the pulse values with the mean of the two values before the pulse."
+    
+    Parameters:
+    data (np.ndarray): The data array.
+    filer_mask (np.ndarray): A boolean mask array indicating pulse (True) and no-pulse (False) data points.
 
+    Returns:
+    np.ndarray: The data array with pulses removed.
+    
+    """
+    data_mod = data.copy()
+    index_pulses = np.where(filer_mask)[0]
+    for idx in index_pulses:
+        data_mod[idx] = np.mean(data_mod [idx-2:idx-1])
+    return data_mod
