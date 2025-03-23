@@ -54,7 +54,7 @@ def convert_to_bool(sig: np.ndarray, peak_idx: np.ndarray) -> np.ndarray:
     peak_bool[peak_idx] = True
     return peak_bool
 
-def find_p_tops(ecg_signal: list[float], qrs_peaks: np.ndarray[bool], fs: int) -> np.ndarray:
+def find_p_tops(ecg_signal: list[float], qrs_peaks: np.ndarray[int], fs: int) -> np.ndarray:
     """
     Find P-tops in the ECG signal.
 
@@ -96,9 +96,9 @@ def find_p_tops(ecg_signal: list[float], qrs_peaks: np.ndarray[bool], fs: int) -
     p_tops_boolean[p_tops] = True
     return p_tops_boolean
 
-def classify_pacing(p_bool: np.ndarray[bool], qrs_bool: np.ndarray[bool], 
-                    pace_bool: np.ndarray[bool], fs, threshold_p_ms: float = 0.2, 
-                    threshold_qrs_ms: float = 0.2):
+def classify_pacing(p_bool: np.ndarray[bool], qrs_bool: np.ndarray[bool],
+                    pace_bool: np.ndarray[bool], fs, threshold_p_ms: float = 0.2,
+                    threshold_qrs_ms: float = 0.2) -> pd.DataFrame:
     """
     Classifies pacing peaks into Atrial, Ventricular, or Unknown types based on given boolean arrays.
 
@@ -136,7 +136,7 @@ def classify_pacing(p_bool: np.ndarray[bool], qrs_bool: np.ndarray[bool],
 
     return classified_pacing
 
-def classify_pacemaker_settings(classified_pacing: pd.DataFrame, pace_bool: np.ndarray[bool]):
+def classify_pacemaker_settings(classified_pacing: pd.DataFrame, pace_bool: np.ndarray[bool]) -> str:
     """
     Classifies pacemaker settings based on pacing peaks
 
