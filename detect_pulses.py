@@ -22,7 +22,7 @@ An example of code usage is provided below:
 """
 import numpy as np
 
-def filter_data(data, file_name):
+def filter_data(data, file_name, lead = 2):
     """
     Filters the data to retain only good data points.
     
@@ -36,24 +36,23 @@ def filter_data(data, file_name):
     np.ndarray: A boolean mask array indicating good (True) and bad (False) data points.
     """
     # Initialize a mask with all True values, indicating all data points are initially considered good
-    mask = np.ones(data[file_name, 'data'].shape, dtype=bool)
+    mask = np.ones(len(data[file_name, 'data']), dtype=bool)
     
-    # Loop through the first 12 columns of the data
-    for i in range(12):
-        # Extract the data for the current column
-        data_used = data[file_name, 'data'][:, i]
-        
-        # Find indices where the data is below -3000
-        indices = np.where(data_used < -3000)[0]
-        
-        # Calculate the differences between consecutive indices
-        diffs = np.diff(indices, prepend=indices[0])
-        
-        # Identify indices where the difference is 1 (indicating consecutive bad data points)
-        false_indices = indices[diffs == 1]
-        
-        # Update the mask to False at the identified indices for the current column
-        mask[false_indices, i] = False
+
+    # Extract the data for the current column
+    data_used = data[file_name, 'data'][:, lead-1]
+    
+    # Find indices where the data is below -3000
+    indices = np.where(data_used < -3000)[0]
+    
+    # Calculate the differences between consecutive indices
+    diffs = np.diff(indices, prepend=indices[0])
+    
+    # Identify indices where the difference is 1 (indicating consecutive bad data points)
+    false_indices = indices[diffs == 1]
+    
+    # Update the mask to False at the identified indices for the current column
+    mask[false_indices] = False
     
     # Return the mask
     return mask
@@ -95,7 +94,7 @@ def detect_pulses(data, filter_mask, file_name):
         mask[true_indices, i] = True
     return mask
 
-def remove_pulses(data: np.ndarray, filer_mask: np.ndarray) -> np.ndarray:
+def remove_pacemaker_pulses(data: np.ndarray, filter_pulses: np.ndarray) -> np.ndarray:
     """"
     Removes pulses from the data by replacing the pulse values with the mean of the two values before the pulse."
     
@@ -108,7 +107,7 @@ def remove_pulses(data: np.ndarray, filer_mask: np.ndarray) -> np.ndarray:
     
     """
     data_mod = data.copy()
-    index_pulses = np.where(filer_mask)[0]
+    index_pulses = np.where(filter_pulses)[0]
     for idx in index_pulses:
         data_mod[idx] = np.mean(data_mod [idx-2:idx-1])
     return data_mod

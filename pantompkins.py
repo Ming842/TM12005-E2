@@ -67,12 +67,12 @@ def find_p_tops(ecg_signal: list[float], qrs_peaks: np.ndarray[int], fs: int) ->
     p_tops (np.ndarray): The indices of the P-tops in the ECG signal.
     """
     p_tops = []
-    p_window = int(0.2 * fs)  # 200 ms window
+    p_window = int(0.3 * fs)  # 200 ms window
 
  ## Improved P-wave Detection Code
     for qrs in qrs_peaks:
         # Set adaptive window boundaries
-        start = max(0, qrs - p_window - 15)
+        start = max(0, qrs - p_window - 10)
         end = qrs  # QRS complex start position
         
         # Extract segment and find peaks
@@ -98,7 +98,7 @@ def find_p_tops(ecg_signal: list[float], qrs_peaks: np.ndarray[int], fs: int) ->
 
 def classify_pacing(p_bool: np.ndarray[bool], qrs_bool: np.ndarray[bool],
                     pace_bool: np.ndarray[bool], fs, threshold_p_ms: float = 0.2,
-                    threshold_qrs_ms: float = 0.2) -> pd.DataFrame:
+                    threshold_qrs_ms: float = 0.2, threshold_vent_ms: float = 0.1) -> pd.DataFrame:
     """
     Classifies pacing peaks into Atrial, Ventricular, or Unknown types based on given boolean arrays.
 
@@ -118,6 +118,7 @@ def classify_pacing(p_bool: np.ndarray[bool], qrs_bool: np.ndarray[bool],
     classified_pacing = pd.DataFrame(columns=['index', 'time (s)', 'type'])
     threshold_p_samples = threshold_p_ms * fs
     threshold_qrs_samples = threshold_qrs_ms * fs
+    threshold_vent_samples = threshold_vent_ms * fs
     pace_idxs = np.where(pace_bool)[0]
     for idx in pace_idxs[::-1]:
         idx = int(idx)
@@ -128,6 +129,9 @@ def classify_pacing(p_bool: np.ndarray[bool], qrs_bool: np.ndarray[bool],
         elif (any(qrs_bool[idx:idx + int(threshold_qrs_samples)]) and 
               any(p_bool[idx - int(threshold_p_samples):idx])):
             classified_pacing.loc[-1] = [idx, time, 'Ventricular']
+        
+        elif any(qrs_bool[idx:idx + int(threshold_vent_samples)]):
+            classified_pacing.loc[-1] = [idx, time, 'Ventricular - no P-top']
         
         else:
             classified_pacing.loc[-1] = [idx, time,'Unknown']
@@ -158,7 +162,7 @@ def classify_pacemaker_settings(classified_pacing: pd.DataFrame, pace_bool: np.n
         case {'Atrial': atrial_count} if atrial_count == n_paces:
             return 'Atrial Pacing'
         case {'Ventricular': ventricular_count} if ventricular_count == n_paces:
-            return 'Ventricular Pacing'
+            return 'Ventricular Pacing'           
         case {'Atrial': atrial_count, 'Ventricular': ventricular_count}:
             return 'Dual Pacing'
 
