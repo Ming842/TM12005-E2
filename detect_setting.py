@@ -9,12 +9,12 @@ class PacingDetector:
     """
 
 
-    def __init__(self, data, p_mask):
+    def __init__(self, data, p_mask, contains_atrium_flutter):
         self.data = data
         self.frequency_ventricular_pacing = None
         self.frequency_atrial_pacing = None
         self.p_mask = p_mask
-
+        self.contains_atrium_flutter = contains_atrium_flutter
 
     def detect_setting(self):
         """
@@ -22,7 +22,12 @@ class PacingDetector:
         This function is based on the classifier three provided in the report.
         """
         # Check if there was pacing in atrium, ventricle, or both
-        atrial_pacing_bool = (self.data.groupby('type').size().loc["Atrial"] / len(self.data) * 100) > 0.1
+        if self.contains_atrium_flutter:
+            atrial_pacing_bool = False
+        else: 
+            atrial_pacing_bool = (self.data.groupby('type').size().loc["Atrial"] / len(self.data) * 100) > 0.1
+        
+
         ventricular_pacing_bool = (self.data.groupby('type').size().loc["Ventricular"] / len(self.data) * 100) > 0.1
 
 
@@ -43,12 +48,12 @@ class PacingDetector:
         if self.frequency_ventricular_pacing is not None:
             message_frequency_ventricular = (
                 "The frequency of the ventricular pacing is mostly between "
-                f"{self.frequency_ventricular_pacing[0]:.2f} and {self.frequency_ventricular_pacing[1]:.2f} Hz per min"
+                f"{self.frequency_ventricular_pacing[0]:.2f} and {self.frequency_ventricular_pacing[1]:.2f} paces per min"
                 )
         if self.frequency_atrial_pacing is not None:
             message_frequency_atrial = (
                 ", the frequency of the atrial pacing is mostly between " 
-                f"{self.frequency_atrial_pacing[0]:.2f} and {self.frequency_atrial_pacing[1]:.2f} Hz per min"
+                f"{self.frequency_atrial_pacing[0]:.2f} and {self.frequency_atrial_pacing[1]:.2f} paces per min"
                 )
         
         #return the setting and the frequency of the pacing
