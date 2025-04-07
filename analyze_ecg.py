@@ -162,4 +162,4 @@ def classify_pacemaker_settings(classified_pacing: pd.DataFrame, pace_bool: np.n
         atrial = classified_pacing.groupby('type').size().loc["Atrial"] / len(classified_pacing) * 100
         print(f"Atrial pacing %: {atrial}")   
     ventricular = classified_pacing.groupby('type').size().loc["Ventricular"] / len(classified_pacing) * 100
-    print(f"Atrial pacing %: {ventricular}")
+    print(f"Ventricular pacing %: {ventricular}")

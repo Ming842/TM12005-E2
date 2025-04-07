@@ -1,9 +1,8 @@
 import numpy as np
 
-
 import dataloader as dl
 import detect_pulses as dp
-import pantompkins as pt
+import analyze_ecg as ae
 import detect_setting as ds
 import argparse
 
@@ -47,13 +46,13 @@ def main():
 
     # Perform all calculations
     data_plot = dp.remove_pacemaker_pulses(data_plot, data_mask)
-    qrs_idx, data_pt = pt.pan_tompkins(data_plot, fs)
-    qrs_mask = pt.convert_to_bool(data_plot, qrs_idx)
-    p_idx = pt.find_p_tops(data_plot, qrs_idx, fs)
-    p_mask = pt.convert_to_bool(data_plot, p_idx)
-    classified = pt.classify_pacing(p_mask, qrs_mask, data_mask, fs)
+    qrs_idx, data_pt = ae.pan_tompkins(data_plot, fs)
+    qrs_mask = ae.convert_to_bool(data_plot, qrs_idx)
+    p_idx = ae.find_p_tops(data_plot, qrs_idx, fs)
+    p_mask = ae.convert_to_bool(data_plot, p_idx)
+    classified = ae.classify_pacing(p_mask, qrs_mask, data_mask, fs)
     time_pt = np.arange(0,len(data_pt),1) / fs
-    pt.classify_pacemaker_settings(classified, p_mask, contains_atrium_fibrilation)
+    ae.classify_pacemaker_settings(classified, p_mask, contains_atrium_fibrilation)
 
     print("Detecting settings...")
 
