@@ -6,7 +6,6 @@ This repository contains Python scripts related to the Advanced Signal Processin
 
 - [Overview](#overview)
 - [Scripts](#scripts)
-- [Requirements](#requirements)
 - [Usage](#usage)
 
 ## Overview
@@ -35,6 +34,7 @@ Below is a brief description of the scripts in this repository:
    pip install -r requirements.txt
    ```
 3. Run the desired script:
-   ```bash
-   python script_name.py --data_dir "C:\example\dir\data"
-   ```
+     ```bash
+     python main.py --input_dir "C:\example\dir\data"
+     ```
+

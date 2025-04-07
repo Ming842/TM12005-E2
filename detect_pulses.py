@@ -1,24 +1,5 @@
 """
 This module contains functions to filter data and detect pulses in the data.
-
-An example of code usage is provided below:
-
-        imported_data, imported_data_details = dl.import_data(r"C:\\Users\\jelle\\OneDrive - Delft University of Technology\\TM12005 Advanced Signal Processing\\opdracht 2\\data")
-        data = dl.restructure_data(imported_data)
-
-        mask_filter = dp.filter_data(data,"005_Pimpel.mat")
-        mask_pulses = dp.detect_pulses(data, mask_filter, "005_Pimpel.mat")
-
-        data_plot = data_test[1000:1500,1]
-        data_mask = mask_pulses[1000:1500,1]
-
-        fs = 200
-
-        time = np.arange(0,len(data_plot),1) / fs
-
-
-        plt.plot(time, data_plot)
-        plt.plot(time[data_mask],np.zeros(len(data_plot[data_mask])),"*")
 """
 import numpy as np
 

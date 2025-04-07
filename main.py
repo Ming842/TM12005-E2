@@ -1,8 +1,12 @@
+import argparse
+
+import numpy as np
+
 import dataloader as dl
 import detect_pulses as dp
 import analyze_ecg as ae
 import detect_setting as ds
-import argparse
+
 
 def main():
     """
@@ -43,7 +47,7 @@ def main():
 
     # Perform all calculations
     data_plot = dp.remove_pacemaker_pulses(data_plot, data_mask)
-    qrs_idx, data_pt = ae.pan_tompkins(data_plot, fs)
+    qrs_idx, _ = ae.pan_tompkins(data_plot, fs)
     qrs_mask = ae.convert_to_bool(data_plot, qrs_idx)
     p_idx = ae.find_p_tops(data_plot, qrs_idx, fs)
     p_mask = ae.convert_to_bool(data_plot, p_idx)
