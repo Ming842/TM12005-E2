@@ -54,7 +54,7 @@ def request_input(imported_data):
             print("Invalid choice. Please choose a valid data file.")
     # Request user input to determine if the signal contains atrium fibrilation
     while True:
-        user_input = input("Does the signal contain atrium fibrilation? (true/false): ").strip().lower()
+        user_input = input("Does the signal contain atrial fibrilation? (true/false): ").strip().lower()
         if user_input in ['true', 'false']:
             contains_atrium_fibrilation = user_input == 'true'
             print(f"Atrium fibrilation: {contains_atrium_fibrilation}")

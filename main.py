@@ -52,7 +52,7 @@ def main():
     p_mask = ae.convert_to_bool(data_plot, p_idx)
     classified = ae.classify_pacing(p_mask, qrs_mask, data_mask, fs)
     time_pt = np.arange(0,len(data_pt),1) / fs
-    ae.classify_pacemaker_settings(classified, p_mask, contains_atrium_fibrilation)
+    ae.classify_pacemaker_settings(classified, p_mask, qrs_mask, p_mask, contains_atrium_fibrilation)
 
     print("Detecting settings...")
 
