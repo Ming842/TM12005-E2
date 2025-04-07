@@ -9,12 +9,12 @@ class PacingDetector:
     """
 
 
-    def __init__(self, data, p_mask, contains_atrium_flutter):
+    def __init__(self, data, p_mask, contains_atrium_fibrilation):
         self.data = data
         self.frequency_ventricular_pacing = None
         self.frequency_atrial_pacing = None
         self.p_mask = p_mask
-        self.contains_atrium_flutter = contains_atrium_flutter
+        self.contains_atrium_fibrilation = contains_atrium_fibrilation
 
     def detect_setting(self):
         """
@@ -22,7 +22,7 @@ class PacingDetector:
         This function is based on the classifier three provided in the report.
         """
         # Check if there was pacing in atrium, ventricle, or both
-        if self.contains_atrium_flutter:
+        if self.contains_atrium_fibrilation:
             atrial_pacing_bool = False
         else: 
             atrial_pacing_bool = (self.data.groupby('type').size().loc["Atrial"] / len(self.data) * 100) > 0.1

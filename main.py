@@ -5,6 +5,7 @@ import dataloader as dl
 import detect_pulses as dp
 import pantompkins as pt
 import detect_setting as ds
+import argparse
 
 def main():
     """
@@ -13,13 +14,25 @@ def main():
     # Load the data
     print("Loading data...")
 
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Pacemaker detection algorithm")
+    parser.add_argument(
+        "--data_dir",
+        type=str,
+        required=True,
+        help="Directory to the folder containing the data files (absolute path)"
+    )
+    args = parser.parse_args()
+
+    data_dir = args.data_dir
+
     #Import data
-    imported_data, _ = dl.import_data(r'c:\Users\mdcalje\OneDrive\School\Technical Medicine\TM Jaar 1\TM12004 - Advanced Signal Processing\data')
+    imported_data, _ = dl.import_data(data_dir)
     data = dl.restructure_data(imported_data)
     print("Choosing data...")
 
     # Choose the data to be used
-    data_choice, contains_atrium_flutter = request_input(imported_data)
+    data_choice, contains_atrium_fibrilation = dl.request_input(imported_data)
 
 
     data_test = data[data_choice, 'data']
@@ -40,39 +53,16 @@ def main():
     p_mask = pt.convert_to_bool(data_plot, p_idx)
     classified = pt.classify_pacing(p_mask, qrs_mask, data_mask, fs)
     time_pt = np.arange(0,len(data_pt),1) / fs
-    pt.classify_pacemaker_settings(classified, p_mask)
+    pt.classify_pacemaker_settings(classified, p_mask, contains_atrium_fibrilation)
 
     print("Detecting settings...")
 
     # detect settings
-    pacemaker = ds.PacingDetector(classified, p_mask, contains_atrium_flutter)
+    pacemaker = ds.PacingDetector(classified, p_mask, contains_atrium_fibrilation)
     setting = pacemaker.detect_setting()
     print("Settings detected:")
     print(setting) 
 
-def request_input(imported_data):
-    filenames = list(imported_data.keys())
-    filenames_printable = ', '.join(filenames[:-1]) + ' and ' + filenames[-1] if len(filenames) > 1 else filenames[0]
-    
-
-    while True:
-        choice = input(f"Choose the data to be used, available filenames \n {filenames_printable}: ").strip()
-        if choice in filenames:
-            data_choice = choice
-            print(f"Data chosen: {data_choice}")
-            break
-        else:
-            print("Invalid choice. Please choose a valid data file.")
-    # Request user input to determine if the signal contains atrium flutter
-    while True:
-        user_input = input("Does the signal contain atrium flutter? (true/false): ").strip().lower()
-        if user_input in ['true', 'false']:
-            contains_atrium_flutter = user_input == 'true'
-            print(f"Atrium flutter: {contains_atrium_flutter}")
-            break
-        else:
-            print("Invalid input. Please enter 'true' or 'false'.")
-    return data_choice, contains_atrium_flutter
 
 if __name__ == "__main__":
     main() 

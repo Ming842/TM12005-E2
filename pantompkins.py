@@ -140,7 +140,7 @@ def classify_pacing(p_bool: np.ndarray[bool], qrs_bool: np.ndarray[bool],
 
     return classified_pacing
 
-def classify_pacemaker_settings(classified_pacing: pd.DataFrame, pace_bool: np.ndarray[bool]) -> str:
+def classify_pacemaker_settings(classified_pacing: pd.DataFrame, pace_bool: np.ndarray[bool], contains_atrium_fibrilation = bool) -> str:
     """
     Classifies pacemaker settings based on pacing peaks
 
@@ -157,13 +157,9 @@ def classify_pacemaker_settings(classified_pacing: pd.DataFrame, pace_bool: np.n
     counts = classified_pacing['type'].value_counts()
     counts = counts[counts.index != 'Unknown']
     n_paces = n_paces - classified_pacing['type'].value_counts().get('Unknown', 0)
-    print(counts, n_paces)
-    match counts.to_dict():
-        case {'Atrial': atrial_count} if atrial_count == n_paces:
-            return 'Atrial Pacing'
-        case {'Ventricular': ventricular_count} if ventricular_count == n_paces:
-            return 'Ventricular Pacing'           
-        case {'Atrial': atrial_count, 'Ventricular': ventricular_count}:
-            return 'Dual Pacing'
 
-
+    if not contains_atrium_fibrilation:
+        atrial = classified_pacing.groupby('type').size().loc["Atrial"] / len(classified_pacing) * 100
+        print(f"Atrial pacing %: {atrial}")   
+    ventricular = classified_pacing.groupby('type').size().loc["Ventricular"] / len(classified_pacing) * 100
+    print(f"Atrial pacing %: {ventricular}")
