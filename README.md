@@ -35,6 +35,6 @@ Below is a brief description of the scripts in this repository:
    ```
 3. Run the desired script:
      ```bash
-     python main.py --input_dir "C:\example\dir\data"
+     python main.py --data_dir "C:\example\dir\data"
      ```
 
