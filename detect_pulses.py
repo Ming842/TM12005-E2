@@ -36,23 +36,25 @@ def filter_data(data, file_name, lead = 2):
     np.ndarray: A boolean mask array indicating good (True) and bad (False) data points.
     """
     # Initialize a mask with all True values, indicating all data points are initially considered good
-    mask = np.ones(len(data[file_name, 'data']), dtype=bool)
+    mask = np.ones(data[file_name, 'data'].shape, dtype=bool)
     
 
-    # Extract the data for the current column
-    data_used = data[file_name, 'data'][:, lead-1]
+    for i in range(12):
+        # Extract the data for the current column
+        data_used = data[file_name, 'data'][:, i]
+        
+        # Find indices where the data is below -3000
+        indices = np.where(data_used < -3000)[0]
+        
+        # Calculate the differences between consecutive indices
+        diffs = np.diff(indices, prepend=indices[0])
+        
+        # Identify indices where the difference is 1 (indicating consecutive bad data points)
+        false_indices = indices[diffs == 1]
+        
+        # Update the mask to False at the identified indices for the current column
+        mask[false_indices, i] = False
     
-    # Find indices where the data is below -3000
-    indices = np.where(data_used < -3000)[0]
-    
-    # Calculate the differences between consecutive indices
-    diffs = np.diff(indices, prepend=indices[0])
-    
-    # Identify indices where the difference is 1 (indicating consecutive bad data points)
-    false_indices = indices[diffs == 1]
-    
-    # Update the mask to False at the identified indices for the current column
-    mask[false_indices] = False
     
     # Return the mask
     return mask
