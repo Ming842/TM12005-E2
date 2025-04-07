@@ -60,7 +60,7 @@ def main():
     pacemaker = ds.PacingDetector(classified, p_mask, contains_atrium_fibrilation)
     setting = pacemaker.detect_setting()
     print("Settings detected:")
-    print(setting) 
+    print(setting)
 
 
 if __name__ == "__main__":
