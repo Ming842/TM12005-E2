@@ -57,9 +57,11 @@ class PacingDetector:
                 ", the frequency of the atrial pacing is mostly between " 
                 f"{self.frequency_atrial_pacing[0]:.2f} and {self.frequency_atrial_pacing[1]:.2f} paces per min"
                 )
+        
+        
         if self.timedelay_between_atrial_ventricular is not None:
             message_time_delay_atrial_ventrikel = (
-                ", the time delay between the atrial and ventricular pacing is mostly between "
+                ", the time between the atrial and ventricular pacing is mostly between "
                 f"{self.timedelay_between_atrial_ventricular[0]:.2f} and {self.timedelay_between_atrial_ventricular[1]:.2f} ms"
                 )
 
@@ -137,16 +139,15 @@ class PacingDetector:
         max_diff = diffs.max()
         bins = np.arange(min_diff, max_diff + 5, 5)  # 25 ms bins
 
-        # Calculate the frequency of the most used bin
-        max_bin_count = binned_diff.value_counts().max()
-        index_max_bin_count = binned_diff.value_counts().idxmax()
-        time_delay = [(1/(index_max_bin_count.right/200)), (1/(index_max_bin_count.left/200))]
-
-        self.timedelay_between_atrial_ventricular = time_delay
-
         # Bin the differences
         binned_diff = pd.cut(diffs, bins=bins)
         max_bin_count = binned_diff.value_counts().max()
+
+        # Calculate the frequency of the most used bin
+        max_bin_count = binned_diff.value_counts().max()
+        index_max_bin_count = binned_diff.value_counts().idxmax()
+        time_delay = [((index_max_bin_count.left/200)*1000), ((index_max_bin_count.right/200)*1000)]
+        self.timedelay_between_atrial_ventricular = time_delay
 
         # return if 90% of the time between p-top and pulse is within 25 ms difference
         return (max_bin_count / len(df) * 100) > 90
@@ -161,9 +162,11 @@ class PacingDetector:
             if self.check_if_time_between_pulses_is_the_same('Atrial'):
                 return "DDO"
             else:
+                self.check_if_time_between_ptop_and_pulse_is_the_same()
                 return "DDD"
         else:
             self.check_if_time_between_pulses_is_the_same('Atrial') # to calculate the frequency of the atrial pacing
+            self.check_if_time_between_ptop_and_pulse_is_the_same()
             return "DDD"
 
     def atrial_pacing(self):
