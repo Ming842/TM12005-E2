@@ -41,6 +41,9 @@ def restructure_data(data: dict) -> dict:
     return restructured_data
 
 def request_input(imported_data):
+    """
+    Request user input to choose the data file and whether it contains atrial fibrillation.
+    """
     filenames = list(imported_data.keys())
     filenames_printable = ', '.join(filenames[:-1]) + ' and ' + filenames[-1] if len(filenames) > 1 else filenames[0]
 

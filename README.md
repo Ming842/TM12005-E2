@@ -5,7 +5,6 @@ This repository contains Python scripts related to the Advanced Signal Processin
 ## Table of Contents
 - [Overview](#overview)
 - [Scripts](#scripts)
-- [Requirements](#requirements)
 - [Usage](#usage)
 
 
@@ -38,6 +37,6 @@ Below is a brief description of the scripts in this repository:
      ```
 3. Run the desired script:
      ```bash
-     python script_name.py --input_dir "C:\example\dir\data"
+     python main.py --input_dir "C:\example\dir\data"
      ```
 

@@ -8,7 +8,6 @@ class PacingDetector:
 
     """
 
-
     def __init__(self, data, p_mask, contains_atrium_fibrilation):
         self.data = data
         self.frequency_ventricular_pacing = None
@@ -24,7 +23,7 @@ class PacingDetector:
         # Check if there was pacing in atrium, ventricle, or both
         if self.contains_atrium_fibrilation:
             atrial_pacing_bool = False
-        else: 
+        else:
             atrial_pacing_bool = (self.data.groupby('type').size().loc["Atrial"] / len(self.data) * 100) > 0.1
         
 
@@ -173,7 +172,7 @@ class PacingDetector:
         if self.check_if_time_between_pulses_is_the_same('Ventricular'):
             return "VOO"
         elif self.check_if_time_between_ptop_and_pulse_is_the_same():
-            return "VAT"
+            return "VAT or DDD"
         else:
             return "VVI"
 
