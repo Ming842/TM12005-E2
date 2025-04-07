@@ -22,7 +22,7 @@ An example of code usage is provided below:
 """
 import numpy as np
 
-def filter_data(data, file_name, lead = 2):
+def filter_data(data, file_name):
     """
     Filters the data to retain only good data points.
     
