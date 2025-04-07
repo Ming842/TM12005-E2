@@ -3,7 +3,7 @@ This module contains functions to filter data and detect pulses in the data.
 """
 import numpy as np
 
-def filter_data(data, file_name, lead = 2):
+def filter_data(data, file_name):
     """
     Filters the data to retain only good data points.
     
