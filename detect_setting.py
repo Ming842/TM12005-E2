@@ -12,6 +12,7 @@ class PacingDetector:
         self.data = data
         self.frequency_ventricular_pacing = None
         self.frequency_atrial_pacing = None
+        self.timedelay_between_atrial_ventricular = None
         self.p_mask = p_mask
         self.contains_atrium_fibrilation = contains_atrium_fibrilation
 
@@ -44,6 +45,8 @@ class PacingDetector:
         message_setting = f"Detected setting: {setting}"
         message_frequency_ventricular = ""
         message_frequency_atrial = ""
+        message_time_delay_atrial_ventrikel = ""
+
         if self.frequency_ventricular_pacing is not None:
             message_frequency_ventricular = (
                 "The frequency of the ventricular pacing is mostly between "
@@ -54,9 +57,15 @@ class PacingDetector:
                 ", the frequency of the atrial pacing is mostly between " 
                 f"{self.frequency_atrial_pacing[0]:.2f} and {self.frequency_atrial_pacing[1]:.2f} paces per min"
                 )
-        
+        if self.timedelay_between_atrial_ventricular is not None:
+            message_time_delay_atrial_ventrikel = (
+                ", the time delay between the atrial and ventricular pacing is mostly between "
+                f"{self.timedelay_between_atrial_ventricular[0]:.2f} and {self.timedelay_between_atrial_ventricular[1]:.2f} ms"
+                )
+
+
         #return the setting and the frequency of the pacing
-        return f"{message_setting} {message_frequency_ventricular} {message_frequency_atrial}"
+        return f"{message_setting} {message_frequency_ventricular} {message_frequency_atrial} {message_time_delay_atrial_ventrikel}"
 
     def check_if_time_between_pulses_is_the_same(self, pulse_type):
         """
@@ -127,6 +136,13 @@ class PacingDetector:
         min_diff = diffs.min()
         max_diff = diffs.max()
         bins = np.arange(min_diff, max_diff + 5, 5)  # 25 ms bins
+
+        # Calculate the frequency of the most used bin
+        max_bin_count = binned_diff.value_counts().max()
+        index_max_bin_count = binned_diff.value_counts().idxmax()
+        time_delay = [(1/(index_max_bin_count.right/200)), (1/(index_max_bin_count.left/200))]
+
+        self.timedelay_between_atrial_ventricular = time_delay
 
         # Bin the differences
         binned_diff = pd.cut(diffs, bins=bins)
