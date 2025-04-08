@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 
-
 class PacingDetector:
     """
     A class to detect the pacing settings based on the classifier data.
