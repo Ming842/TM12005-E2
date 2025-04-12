@@ -46,19 +46,19 @@ class PacingDetector:
         message_frequency_atrial = ""
         message_time_delay_atrial_ventrikel = ""
 
-        if self.frequency_ventricular_pacing is not None:
+        if self.frequency_ventricular_pacing:
             message_frequency_ventricular = (
                 "The frequency of the ventricular pacing is mostly between "
                 f"{self.frequency_ventricular_pacing[0]:.2f} and {self.frequency_ventricular_pacing[1]:.2f} paces per min"
                 )
-        if self.frequency_atrial_pacing is not None:
+        if self.frequency_atrial_pacing:
             message_frequency_atrial = (
                 ", the frequency of the atrial pacing is mostly between " 
                 f"{self.frequency_atrial_pacing[0]:.2f} and {self.frequency_atrial_pacing[1]:.2f} paces per min"
                 )
         
         
-        if self.timedelay_between_atrial_ventricular is not None:
+        if self.timedelay_between_atrial_ventricular is not None and atrial_pacing_bool:
             message_time_delay_atrial_ventrikel = (
                 ", the time between the atrial and ventricular pacing is mostly between "
                 f"{self.timedelay_between_atrial_ventricular[0]:.2f} and {self.timedelay_between_atrial_ventricular[1]:.2f} ms"
